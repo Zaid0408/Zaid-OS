@@ -1,116 +1,103 @@
-#include <stdio.h>
-int request[50];
-int SIZE;
-int pre;
-int head;
-int uptrack;
-int downtrack;
-struct max
+#include<stdio.h>
+int absoluteValue(int x)
 {
-    int up;
-    int down;
-} kate[50];
-int dist(int a, int b)
-{
-    if (a > b)
-        return a - b;
-    return b - a;
-}
-void sort(int n)
-{
-    int i, j;
-    for (i = 0; i < n - 1; i++)
+    if(x>0)
     {
-        for (j = 0; j < n - i - 1; j++)
-        {
-            if (request[j] > request[j + 1])
-            {
-                int temp = request[j];
-                request[j] = request[j + 1];
-                request[j + 1] = temp;
-            }
-        }
-    }
-    j = 0;
-    i = 0;
-    while (request[i] != head)
-    {
-
-        kate[j].down = request[i];
-        j++;
-        i++;
-    }
-    downtrack = j;
-    i++;
-    j = 0;
-    while (i < n)
-    {
-        kate[j].up = request[i];
-        j++;
-        i++;
-    }
-    uptrack = j;
-}
-void scan(int n)
-{
-    int i;
-    int seekcount = 0;
-    printf("SEEK SEQUENCE = ");
-    sort(n);
-    if (pre < head)
-    {
-        for (i = 0; i < uptrack; i++)
-        {
-            printf("%d ", head);
-            seekcount = seekcount + dist(head,
-                                         kate[i].up);
-            head = kate[i].up;
-        }
-        for (i = downtrack - 1; i > 0; i--)
-        {
-            printf("%d ", head);
-            seekcount = seekcount + dist(head,
-                                         kate[i].down);
-            head = kate[i].down;
-        }
+        return x;
     }
     else
     {
-        for (i = downtrack - 1; i >= 0; i--)
+        return x*-1;
+    }
+}
+
+void main()
+{
+    int queue[25],n,headposition,i,j,k,seek=0, maxrange,
+    difference,temp,queue1[20],queue2[20],temp1=0,temp2=0;
+    float averageSeekTime;
+
+    // Reading the maximum Range of the Disk. 
+    printf("Enter the maximum range of Disk: ");
+    scanf("%d",&maxrange);
+    
+    // Reading the number of Queue Requests(Disk access requests)
+    printf("Enter the number of queue requests: ");
+    scanf("%d",&n);
+    
+    // Reading the initial head position.(ie. the starting point of execution)
+    printf("Enter the initial head position: ");
+    scanf("%d",&headposition);
+    
+    // Reading disk positions to be read in the order of arrival
+    printf("Enter the disk positions to be read(queue): ");
+    for(i=1;i<=n;i++)   // Note that i varies from 1 to n instead of 0 to n-1
+    {
+        scanf("%d",&temp);  //Reading position value to a temporary variable
+        
+        //Now if the requested position is greater than current headposition,
+        //then pushing that to array queue1
+        if(temp>headposition)
         {
-            printf("%d ", head);
-            seekcount = seekcount + dist(head,
-                                         kate[i].down);
-            head = kate[i].down;
+            queue1[temp1]=temp; //temp1 is the index variable of queue1[]
+            temp1++; //incrementing temp1
         }
-        for (i = 0; i < uptrack - 1; i++)
-        {
-            printf("%d ", head);
-            seekcount = seekcount + dist(head,
-                                         kate[i].up);
-            head = kate[i].up;
+        else    //else if temp < current headposition,then push to array queue2[]
+        {   
+            queue2[temp2]=temp; //temp2 is the index variable of queue2[]
+            temp2++;
         }
     }
-    printf(" %d\nTOTAL DISTANCE :%d", head,
-           seekcount);
-}
-int main()
-{
-    int n, i;
-    printf("ENTER THE DISK SIZE :\n");
-    scanf("%d", &SIZE);
-    printf("ENTER THE NO OF REQUEST SEQUENCE :\n");
-    scanf("%d", &n);
-    printf("ENTER THE REQUEST SEQUENCE :\n");
-    for (i = 0; i < n; i++)
-        scanf("%d", &request[i]);
-    printf("ENTER THE CURRENT HEAD :\n");
-    scanf("%d", &head);
-    request[n] = head;
-    request[n + 1] = SIZE - 1;
 
-    request[n + 2] = 0;
-    printf("ENTER THE PRE REQUEST :\n");
-    scanf("%d", &pre);
-    scan(n + 3);
+    for(i=0;i<temp1-1;i++)
+    {
+        for(j=i+1;j<temp1;j++)
+        {
+            if(queue1[i]>queue1[j])
+            {
+                temp=queue1[i];
+                queue1[i]=queue1[j];
+                queue1[j]=temp;
+            }
+        }
+    }
+    
+    for(i=0;i<temp2-1;i++)
+    {
+        for(j=i+1;j<temp2;j++)
+        {
+            if(queue2[i]<queue2[j])
+            {
+                temp=queue2[i];
+                queue2[i]=queue2[j];
+                queue2[j]=temp;
+            }
+        }
+    }    
+    for(i=1,j=0;j<temp1;i++,j++)
+    {
+        queue[i]=queue1[j]; 
+    }
+    queue[i]=maxrange;
+    for(i=temp1+2,j=0;j<temp2;i++,j++)
+    {
+        queue[i]=queue2[j];
+    }
+    queue[i]=0;
+
+    queue[0]=headposition;
+    
+    for(j=0; j<=n; j++) //Loop starts from headposition. (ie. 0th index of queue) 
+    {   
+        // Finding the difference between next position and current position.
+        difference = absoluteValue(queue[j+1]-queue[j]);
+        
+        // Adding difference to the current seek time value
+        seek = seek + difference;
+    }
+    
+    printf("Total Seek Time= %d\n", seek);
+
 }
+
+// Defining function absoluteValue

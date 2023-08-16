@@ -18,7 +18,7 @@ int main()
     for (i = 0; i < n; i++)
     {
         arr[i].process = i;
-        printf("Enter the process %d data\n", arr[i].process);
+        printf("Enter the process P%d data\n", arr[i].process);
         printf("Enter CPU Burst: ");
         scanf("%d", &(arr[i].burst));
         printf("Enter the arrival time: ");

@@ -33,7 +33,6 @@ int main()
     for (i = 0; i < no_of_pages; ++i)
     {
         flag1 = flag2 = 0;
-
         for (j = 0; j < no_of_frames; ++j)
         {
             if (frames[j] == pages[i])
@@ -74,6 +73,5 @@ int main()
         }
     }
     printf("\n\nTotal Page Faults = %d\n", faults);
-
     return 0;
 }

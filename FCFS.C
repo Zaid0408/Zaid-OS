@@ -10,7 +10,7 @@ int main()
        printf("Enter the burst time of each process:");
        for(i=0;i<n;i++)
        {
-		printf("\nP: %d",(i+1));
+		printf("\nP%d :",(i+1));
 		scanf("%d",&bt[i]);
 
        }
